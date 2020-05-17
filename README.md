@@ -7,6 +7,11 @@ For a binary download, see https://www.nexusmods.com/grimdawn/mods/43/
 ## Issues running this project?
 
 
+## Dependencies missing
+This project uses Nuget for external dependencies. To reinstall these, simply run `Update-Package -reinstall` in the package manager console.
+
+
+
 Error    CS0246    The type or namespace name 'AutoUpdaterDotNET' could not be found (are you missing a using directive or an assembly reference?)    IAGrim    X:\Y\Z\iagd\IAGrim\UI\MainWindow.cs    13    Active
 
 This means you're missing the AutoUpdater.NET.dll file that IA uses for automatic updates.
@@ -14,6 +19,22 @@ It can be obtained in two ways:
 * Simply copying it from an existing IA install
 * Compiling the "Auto updater" project, which is held separately from the IA solution. (SLN)
 Place this file under IAGrim\bin\Release
+
+
+## The process cannot access the file 'IAGrim\obj\x86\Debug\IAGrim.exe.tmp' because it is being used by another process.
+StackTrace:
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)  
+   at System.IO.File.InternalCopy(String sourceFileName, String destFileName, Boolean overwrite, Boolean checkHost)  
+   at System.IO.File.Copy(String sourceFileName, String destFileName, Boolean overwrite)  
+   at InnerWeaver.ReadModule() in C:\projects\\__fody__\FodyIsolated\ModuleReader.cs:line 22  
+   at InnerWeaver.Execute() in C:\projects\\__fody__\FodyIsolated\InnerWeaver.cs:line 93  
+
+When cloning IA and redownloading nuget packages, the settings for __fody__ may have gotten messed up.  
+In `IAGrim\IAGrim\IAGrim.csproj` make sure that the Nuget import for __fody__ is as following: `<Import Project="..\packages\Fody.2.0.0\build\netstandard1.4\Fody.targets" Condition="Exists('..\packages\Fody.2.0.0\build\netstandard1.4\Fody.targets') And '$(Configuration)' == 'Release' " />`
+
+Particulary the `And '$(Configuration)' == 'Release'` to prevent __fody__ from stamping debug builds.
+   
+
 
 
 ## ItemAssistantHook.dll
